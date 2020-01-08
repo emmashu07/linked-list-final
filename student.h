@@ -10,6 +10,8 @@ class Student {
 		Student(char* firstName, char* secondName, int id, float gpa);
 		virtual ~Student();
 		void print();
+		int getId();
+		float getGpa();
 	private:
 		char* firstName;
 		char* secondName;
