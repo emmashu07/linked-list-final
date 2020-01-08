@@ -38,7 +38,6 @@ int main() {
 			if(isHead) {
 				head = addHead();
 				isHead = false;
-				head -> getStudent() -> print();
 			}
 			else {
 				//addNode(head*);
