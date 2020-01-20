@@ -2,11 +2,12 @@
 #include <cstring>
 #include <cctype>
 #include "Node.h"
-#include "student.h"
+#include "Student.h"
 
 using namespace std;
 
-Node* addHead();
+void addNode(Node* prev, Node* curr, int id, Node* newNode);
+void print(Node* head);
 Student* readInStudent();
 
 const int MAX_CHAR = 20;
@@ -14,7 +15,6 @@ const int MAX_CHAR = 20;
 int main() {
 	char input[MAX_CHAR];
 	bool running = true;
-	bool isHead = true;
 	Node* head = NULL;
 
 	cout << "Type HELP to view the commands and their functions." << endl;
@@ -35,14 +35,29 @@ int main() {
 			cout << "Type QUIT to exit the program." << endl;
 		}
 		else if (strcmp(input, "ADD") == 0) {
-			if(isHead) {
-				head = addHead();
-				isHead = false;
+			Student* newStudent = readInStudent();
+			int id = newStudent -> getId();
+			Node* newNode = new Node(newStudent);
+			Node* null = NULL;
+			if (!head) {
+				head = newNode;
+			}
+			else if (id < head -> getStudent() -> getId()) {
+				newNode -> setNext(head);
+				head = newNode;
 			}
 			else {
-				//addNode(head*);
+				addNode(null, head, id, newNode);
 			}
 		}			
+		else if (strcmp(input, "PRINT") == 0) {
+			if (head) {
+				print(head);
+			}
+			else {
+				cout << "No nodes are in the list." << endl;
+			}
+		}
 		else if (strcmp(input, "QUIT") == 0) {
 			running = false;
 		}
@@ -54,9 +69,27 @@ int main() {
 	return 0;
 }
 
-Node* addHead() {
-        Node* node = new Node(readInStudent());
-	return node;
+void addNode(Node* prev, Node* curr, int id, Node* newNode) {
+	if(prev && !curr) {
+		prev -> setNext(newNode);
+		return;
+	}
+	if(prev && (id < curr -> getStudent() -> getId())) {
+		prev -> setNext(newNode);
+		newNode -> setNext(curr);
+		return;
+	}	
+	else {
+		addNode(curr, curr->getNext(), id, newNode);
+	}	
+
+}
+
+void print(Node* head) {
+	if (head) {
+		head -> getStudent() -> print();
+		print(head -> getNext());
+	}
 }
 
 Student* readInStudent() {
