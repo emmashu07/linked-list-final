@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <cstring>
 #include <cctype>
 #include "Node.h"
@@ -7,7 +8,9 @@
 using namespace std;
 
 void addNode(Node* prev, Node* curr, int id, Node* newNode);
+void deleteNode(Node* prev, Node* curr, int id);
 void print(Node* head);
+void average(Node* head, float &sum, int &num);
 Student* readInStudent();
 
 const int MAX_CHAR = 20;
@@ -16,6 +19,7 @@ int main() {
 	char input[MAX_CHAR];
 	bool running = true;
 	Node* head = NULL;
+	Node* null = NULL;
 
 	cout << "Type HELP to view the commands and their functions." << endl;
 
@@ -38,7 +42,6 @@ int main() {
 			Student* newStudent = readInStudent();
 			int id = newStudent -> getId();
 			Node* newNode = new Node(newStudent);
-			Node* null = NULL;
 			if (!head) {
 				head = newNode;
 			}
@@ -50,6 +53,26 @@ int main() {
 				addNode(null, head, id, newNode);
 			}
 		}			
+		else if (strcmp(input, "DELETE") == 0) {
+			if (!head) {
+				cout << "There is nothing to delete!" << endl;
+			}
+			else {
+				cout << "Please enter the ID of the student you wish to delete: " << endl;
+				int id;
+				cin >> id;
+				cin.ignore(MAX_CHAR, '\n');
+				if ((head -> getStudent() -> getId() == id) && !(head -> getNext())) {
+					head = null;
+				}
+				else if ((head -> getStudent() -> getId() == id) && (head-> getNext())) {
+					head = head -> getNext();
+				}
+				else {
+					deleteNode(null, head, id);
+				}
+			}
+		}	
 		else if (strcmp(input, "PRINT") == 0) {
 			if (head) {
 				print(head);
@@ -58,12 +81,24 @@ int main() {
 				cout << "No nodes are in the list." << endl;
 			}
 		}
+		else if (strcmp(input, "AVERAGE") == 0) {
+			float sum = 0;
+			int num = 0;
+			average(head, sum, num);
+			if (head) {
+				float average = sum / num;
+				cout << setprecision(2) << fixed << average << endl;
+			}
+		}
 		else if (strcmp(input, "QUIT") == 0) {
 			running = false;
 		}
 		else {
 			cout << "Not a valid command." << endl;
 			cout << "Type HELP to view commands and their functions." << endl;
+			cin.get(input, MAX_CHAR);
+			cin.ignore(MAX_CHAR, '\n');
+
 		}
 	}	
 	return 0;
@@ -85,12 +120,49 @@ void addNode(Node* prev, Node* curr, int id, Node* newNode) {
 
 }
 
+void deleteNode(Node* prev, Node* curr, int id) {
+	Node* null = NULL;
+	if (!prev && (curr -> getStudent() -> getId() != id)) {
+		cout << "The node does not exist on the list." << endl;
+		return;
+	}
+	if (prev && curr -> getNext() && (id == curr -> getStudent() -> getId())) {
+		prev -> setNext(curr -> getNext());
+		delete curr;
+	}
+	if (prev && !(curr -> getNext()) && (id == curr -> getStudent() -> getId())) {
+		prev -> setNext(null);
+		delete curr;
+	}
+	if (prev && !curr) {
+		cout << "The node does not exist on the list." << endl;
+		return;
+	}
+	else {
+		deleteNode(curr, curr->getNext(), id);
+	}
+}
+	
+
 void print(Node* head) {
 	if (head) {
 		head -> getStudent() -> print();
 		print(head -> getNext());
 	}
 }
+
+void average(Node* head, float &sum, int &num) {
+	if (!head) {
+		cout << "No nodes are in the list." << endl;
+	}
+	else {
+		sum += head -> getStudent() -> getGpa();
+		num++;
+		if (head -> getNext()) {
+			average(head->getNext(), sum, num);
+		}
+	}
+} 
 
 Student* readInStudent() {
 	char firstName[MAX_CHAR];

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "Student.h"
 #include <cstring>
 
@@ -23,7 +24,7 @@ Student::~Student() {
 }
 
 void Student::print() {
-	cout << firstName << " " << secondName << ", " << id << ", " << gpa << endl;
+	cout << firstName << " " << secondName << ", " << id << ", " << setprecision(2) << fixed << gpa << endl;
 }
 
 int Student::getId() {
