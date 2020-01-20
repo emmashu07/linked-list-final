@@ -1,3 +1,8 @@
+/*
+ * Emma Shu, 1/20/2020: Linked lists is a student list program that uses a linked list
+ * where the user can add, delete, print, and average the GPAs of the students.
+ */
+
 #include <iostream>
 #include <iomanip>
 #include <cstring>
@@ -62,11 +67,10 @@ int main() {
 				int id;
 				cin >> id;
 				cin.ignore(MAX_CHAR, '\n');
-				if ((head -> getStudent() -> getId() == id) && !(head -> getNext())) {
-					head = null;
-				}
-				else if ((head -> getStudent() -> getId() == id) && (head-> getNext())) {
+				if (head -> getStudent() -> getId() == id) {
+					Node* temp = head;
 					head = head -> getNext();
+					delete temp;
 				}
 				else {
 					deleteNode(null, head, id);
@@ -121,22 +125,13 @@ void addNode(Node* prev, Node* curr, int id, Node* newNode) {
 }
 
 void deleteNode(Node* prev, Node* curr, int id) {
-	Node* null = NULL;
-	if (!prev && (curr -> getStudent() -> getId() != id)) {
-		cout << "The node does not exist on the list." << endl;
-		return;
-	}
-	if (prev && curr -> getNext() && (id == curr -> getStudent() -> getId())) {
-		prev -> setNext(curr -> getNext());
-		delete curr;
-	}
-	if (prev && !(curr -> getNext()) && (id == curr -> getStudent() -> getId())) {
-		prev -> setNext(null);
-		delete curr;
-	}
 	if (prev && !curr) {
 		cout << "The node does not exist on the list." << endl;
 		return;
+	}
+	if (prev && (id == curr -> getStudent() -> getId())) {
+		prev -> setNext(curr -> getNext());
+		delete curr;
 	}
 	else {
 		deleteNode(curr, curr->getNext(), id);
